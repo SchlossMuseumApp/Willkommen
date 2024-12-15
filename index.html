@@ -27,9 +27,7 @@
         }
         .button {
             display: inline-block;
-            margin: 10px;
             padding: 15px 30px;
-            width: 200px;
             font-size: 20px;
             font-weight: bold;
             color: white;
@@ -37,58 +35,52 @@
             border-radius: 15px;
             background-color: #4CAF50;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-            transition: transform 0.3s, background-color 0.3s;
-            animation: shake 3s infinite ease-in-out;
+            animation: bounce 5s infinite ease-in-out;
         }
-        .button:hover {
-            transform: scale(1.1);
-            background-color: #45A049;
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
-        @keyframes shake {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(-5px, 0); }
-            50% { transform: translate(5px, 0); }
-            75% { transform: translate(-5px, 0); }
-        }
+
         /* Плавающие картинки */
         .floating-item {
             position: absolute;
-            width: 100px;
+            width: 150px;
             height: auto;
             opacity: 0.9;
-            animation: float 15s linear forwards;
+            animation: float 10s linear forwards;
         }
-       @keyframes float {
-    0% {
-        transform: translateY(100vh) rotate(0deg);
-        opacity: 0;
-    }
-    5% {
-        opacity: 1;
-    }
-    95% {
-        opacity: 1; /* Картинка видна почти до конца */
-    }
-    100% {
-        transform: translateY(-10vh) rotate(360deg);
-        opacity: 0;
-    }
-}
+        @keyframes float {
+            0% {
+                transform: translateY(100vh);
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-5vh);
+                opacity: 0;
+            }
+        }
 
-        /* Тексты приветствия */
+        /* Приветственные тексты */
         .floating-text {
             position: absolute;
             font-size: 6vw;
             font-weight: bold;
             color: white;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
-            animation: floatText 5s infinite ease-in-out;
-            z-index: 1;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 20%;
+            opacity: 0;
+            animation: textFade 5s forwards;
         }
-        @keyframes floatText {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+        @keyframes textFade {
+            0% { opacity: 0; }
+            10%, 90% { opacity: 1; }
+            100% { opacity: 0; }
         }
     </style>
 </head>
@@ -100,67 +92,46 @@
 
     <script>
         const items = ['herzogin.png', 'herzog.png', 'throne.png', 'parikdm.png', 'parikhr.png'];
-        const floatingItems = [];
-        const lastPositions = []; // Храним последние позиции, чтобы избежать пересечений
+        let currentItemIndex = 0;
 
-        // Создание плавающих изображений
+        // Создание плавающих изображений по центру
         function createFloatingItem() {
-            if (floatingItems.length >= 5) return; // Максимум 5 элементов
-
-            const availableItems = items.filter(item => !floatingItems.includes(item));
-            if (availableItems.length === 0) return;
-
-            const randomItem = availableItems[Math.floor(Math.random() * availableItems.length)];
             const img = document.createElement('img');
-            img.src = randomItem;
+            img.src = items[currentItemIndex];
             img.className = 'floating-item';
-
-            let positionX, positionY;
-            do {
-                positionX = Math.random() * 30 + 35; // Центрирование на экране
-                positionY = Math.random() * 30 + 35;
-            } while (isOverlapping(positionX, positionY));
-
-            lastPositions.push({ x: positionX, y: positionY });
-            if (lastPositions.length > 5) lastPositions.shift();
-
-            img.style.left = positionX + 'vw';
-            img.style.top = positionY + 'vh';
-            img.style.width = Math.random() > 0.5 ? '200px' : '100px';
+            img.style.left = '50%';
+            img.style.transform = 'translateX(-50%)';
 
             document.body.appendChild(img);
-            floatingItems.push(randomItem);
 
             img.addEventListener('animationend', () => {
                 document.body.removeChild(img);
-                floatingItems.splice(floatingItems.indexOf(randomItem), 1);
             });
+
+            currentItemIndex = (currentItemIndex + 1) % items.length;
         }
 
-        // Проверка на пересечение позиций
-        function isOverlapping(x, y) {
-            return lastPositions.some(pos => Math.abs(pos.x - x) < 10 && Math.abs(pos.y - y) < 10);
-        }
-
-        setInterval(createFloatingItem, 5000);
+        setInterval(createFloatingItem, 3000); // Интервал между картинками
 
         // Приветственные тексты
         const phrases = ["Hallo Kinder! 🎉", "Welcome, Kids! 🎈"];
-        const colors = ['#FFEB3B', '#FFC107', '#FF5722', '#4CAF50', '#03A9F4', '#E91E63'];
+        let currentTextIndex = 0;
 
-        function createFloatingText() {
+        function showFloatingText() {
             const text = document.createElement('div');
             text.className = 'floating-text';
-            text.textContent = phrases[Math.floor(Math.random() * phrases.length)];
-            text.style.color = colors[Math.floor(Math.random() * colors.length)];
-            text.style.left = Math.random() * 50 + 25 + 'vw';
-            text.style.top = Math.random() * 30 + 10 + 'vh';
+            text.textContent = phrases[currentTextIndex];
 
             document.body.appendChild(text);
-            setTimeout(() => text.remove(), 5000);
+
+            text.addEventListener('animationend', () => {
+                document.body.removeChild(text);
+            });
+
+            currentTextIndex = (currentTextIndex + 1) % phrases.length;
         }
 
-        setInterval(createFloatingText, 3000);
+        setInterval(showFloatingText, 5000); // Интервал между текстами
     </script>
 </body>
 </html>
