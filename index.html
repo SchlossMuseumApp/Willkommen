@@ -44,10 +44,17 @@
             transform: scale(1.1); /* Увеличение кнопки */
             background-color: #45A049; /* Тёмно-зелёный */
         }
+        /* Анимация "дрожания" кнопок */
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-5px, 0); }
+            50% { transform: translate(5px, 0); }
+            75% { transform: translate(-5px, 0); }
+        }
         /* Плавающие элементы */
         .floating-item {
             position: absolute;
-            width: 100px; /* Размер элементов */
+            width: 100px;
             height: auto;
             animation: float 15s linear infinite;
             z-index: 0;
@@ -110,25 +117,22 @@
             if (floatingItems.length >= 5) return; // Ограничение до 5 элементов
 
             const item = document.createElement('img');
-            item.src = items[currentIndex]; // Показ по очереди
+            item.src = items[currentIndex];
             item.className = 'floating-item';
-            item.style.left = Math.random() * 80 + 10 + 'vw'; // Позиция по горизонтали
-            item.style.animationDuration = 12 + Math.random() * 8 + 's'; // Разная скорость
-
+            item.style.left = Math.random() * 80 + 10 + 'vw';
+            item.style.animationDuration = 12 + Math.random() * 8 + 's';
             document.body.appendChild(item);
             floatingItems.push(item);
 
-            // Удаляем элемент по завершении анимации
             item.addEventListener('animationend', () => {
                 document.body.removeChild(item);
-                floatingItems.shift(); // Удаляем из массива
+                floatingItems.shift();
             });
 
-            // Переход к следующему элементу в массиве
             currentIndex = (currentIndex + 1) % items.length;
         }
 
-        setInterval(createFloatingItem, 2000); // Новое изображение каждые 2 секунды
+        setInterval(createFloatingItem, 2000);
 
         // Тексты приветствия
         const phrases = [
@@ -143,14 +147,25 @@
             text.className = 'floating-text';
             text.textContent = phrases[Math.floor(Math.random() * phrases.length)];
             text.style.color = colors[Math.floor(Math.random() * colors.length)];
-            text.style.left = Math.random() * 60 + 20 + 'vw'; // Центрирование
+            text.style.left = Math.random() * 60 + 20 + 'vw';
             text.style.top = Math.random() * 50 + 25 + 'vh';
 
             document.body.appendChild(text);
             setTimeout(() => text.remove(), 5000);
         }
 
-        setInterval(createFloatingText, 2500); // Тексты каждые 2.5 секунды
+        setInterval(createFloatingText, 2500);
+
+        // Анимация дрожания кнопок
+        const buttons = document.querySelectorAll('.button');
+        buttons.forEach((button, index) => {
+            setInterval(() => {
+                button.style.animation = 'shake 0.5s ease';
+                button.addEventListener('animationend', () => {
+                    button.style.animation = '';
+                });
+            }, 2000 + index * 500);
+        });
     </script>
 </body>
 </html>
