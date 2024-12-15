@@ -10,7 +10,7 @@
             padding: 0;
             overflow: hidden;
             font-family: 'Comic Sans MS', Arial, sans-serif;
-            background: linear-gradient(to bottom, #FFEB3B, #FF5722); /* Радужный градиент */
+            background: linear-gradient(to bottom, #FFEB3B, #FF5722); /* Яркий градиент */
         }
         html, body {
             width: 100%;
@@ -35,14 +35,14 @@
             color: white;
             text-decoration: none;
             border-radius: 15px;
-            background-color: #4CAF50; /* Ярко-зелёный цвет */
+            background-color: #4CAF50; /* Ярко-зелёный */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             cursor: pointer;
             transition: transform 0.3s, background-color 0.3s;
         }
         .button:hover {
             transform: scale(1.1); /* Увеличение кнопки */
-            background-color: #45A049; /* Более тёмный зелёный */
+            background-color: #45A049; /* Тёмно-зелёный */
         }
         /* Анимация "дрожания" кнопок */
         @keyframes shake {
@@ -51,14 +51,10 @@
             50% { transform: translate(5px, 0); }
             75% { transform: translate(-5px, 0); }
         }
-        .emoji {
-            font-size: 30px;
-            margin-right: 10px;
-        }
-        /* Летающие элементы */
+        /* Плавающие элементы */
         .floating-item {
             position: absolute;
-            width: 80px; /* Уменьшенный размер */
+            width: 100px; /* Размер элементов */
             height: auto;
             animation: float 10s linear infinite;
             z-index: 0;
@@ -76,7 +72,7 @@
                 opacity: 0;
             }
         }
-        /* Анимация текста приветствия */
+        /* Плавающие приветственные тексты */
         .floating-text {
             position: absolute;
             font-size: 8vw;
@@ -95,24 +91,48 @@
     <!-- Контейнер с кнопками -->
     <div class="container">
         <a href="https://schlossmuseumapp.github.io/KinderDeutsch/" class="button">
-            <span class="emoji">🇩🇪</span> Deutsch
+            Deutsch
         </a>
         <a href="https://schlossmuseumapp.github.io/KinderEnglish/" class="button">
-            <span class="emoji">🇬🇧</span> English
+            English
         </a>
     </div>
 
-    <!-- Скрипт для анимации -->
+    <!-- Скрипт для анимаций и плавающих элементов -->
     <script>
-        // Приветственные тексты с эмодзи
+        // Массив изображений для летающих объектов
+        const items = [
+            'herzogin.png',
+            'herzog.png',
+            'throne.png',
+            'parikdm.png',
+            'parikhr.png'
+        ];
+
+        // Создание летающих изображений
+        function createFloatingItem() {
+            const item = document.createElement('img');
+            item.src = items[Math.floor(Math.random() * items.length)];
+            item.className = 'floating-item';
+            item.style.left = Math.random() * 90 + 'vw'; // Случайное положение по горизонтали
+            item.style.animationDuration = 8 + Math.random() * 5 + 's'; // Разная скорость анимации
+            document.body.appendChild(item);
+
+            item.addEventListener('animationend', () => {
+                item.remove();
+            });
+        }
+
+        setInterval(createFloatingItem, 1500); // Плавающие объекты каждые 1.5 секунды
+
+        // Тексты приветствия
         const phrases = [
-            "Hallo Kinder! 🎉", // German
-            "Welcome, Kids! 🎈" // English
+            "Hallo Kinder! 🎉",
+            "Welcome, Kids! 🎈"
         ];
 
         const colors = ['#FFEB3B', '#FFC107', '#FF5722', '#4CAF50', '#03A9F4', '#E91E63'];
 
-        // Добавление приветственного текста
         function createFloatingText() {
             const text = document.createElement('div');
             text.className = 'floating-text';
@@ -123,42 +143,13 @@
             document.body.appendChild(text);
 
             setTimeout(() => {
-                document.body.removeChild(text);
+                text.remove();
             }, 5000);
         }
 
-        setInterval(createFloatingText, 2000); // Текст появляется каждые 2 секунды
+        setInterval(createFloatingText, 2000); // Появление текстов каждые 2 секунды
 
-        // Летающие объекты
-        const items = [
-            'herzogin.png', // Герцогиня
-            'herzog.png',   // Герцог
-            'throne.png',   // Трон
-            'parikdm.png',  // Женский парик
-            'parikhr.png'   // Мужской парик
-        ];
-
-        function createFloatingItem() {
-            const item = document.createElement('img');
-            item.src = items[Math.floor(Math.random() * items.length)];
-            item.className = 'floating-item';
-
-            // Устанавливаем случайное начальное положение
-            item.style.left = Math.random() * 100 + 'vw';
-            item.style.top = '100vh';
-            item.style.animationDuration = 8 + Math.random() * 5 + 's'; // Разное время анимации
-
-            document.body.appendChild(item);
-
-            // Удаляем элемент после завершения анимации
-            item.addEventListener('animationend', () => {
-                document.body.removeChild(item);
-            });
-        }
-
-        setInterval(createFloatingItem, 2000); // Объекты появляются каждые 2 секунды
-
-        // Анимация кнопок
+        // Анимация дрожания кнопок
         const buttons = document.querySelectorAll('.button');
         buttons.forEach((button, index) => {
             setInterval(() => {
@@ -166,7 +157,7 @@
                 button.addEventListener('animationend', () => {
                     button.style.animation = '';
                 });
-            }, 2000 + index * 500); // Разные интервалы для каждой кнопки
+            }, 2000 + index * 500); // Разное время для каждой кнопки
         });
     </script>
 </body>
