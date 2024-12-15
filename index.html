@@ -56,7 +56,7 @@
             position: absolute;
             width: 100px; /* Размер элементов */
             height: auto;
-            animation: float 10s linear infinite;
+            animation: float 15s linear infinite;
             z-index: 0;
         }
         @keyframes float {
@@ -75,7 +75,7 @@
         /* Плавающие приветственные тексты */
         .floating-text {
             position: absolute;
-            font-size: 8vw;
+            font-size: 6vw;
             font-weight: bold;
             color: white;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
@@ -114,8 +114,8 @@
             const item = document.createElement('img');
             item.src = items[Math.floor(Math.random() * items.length)];
             item.className = 'floating-item';
-            item.style.left = Math.random() * 90 + 'vw'; // Случайное положение по горизонтали
-            item.style.animationDuration = 8 + Math.random() * 5 + 's'; // Разная скорость анимации
+            item.style.left = Math.random() * 80 + 10 + 'vw'; // Ограничиваем область по горизонтали
+            item.style.animationDuration = 12 + Math.random() * 8 + 's'; // Более длительная анимация
             document.body.appendChild(item);
 
             item.addEventListener('animationend', () => {
@@ -123,7 +123,7 @@
             });
         }
 
-        setInterval(createFloatingItem, 1500); // Плавающие объекты каждые 1.5 секунды
+        setInterval(createFloatingItem, 3000); // Уменьшенная частота появления: каждые 3 секунды
 
         // Тексты приветствия
         const phrases = [
@@ -138,8 +138,8 @@
             text.className = 'floating-text';
             text.textContent = phrases[Math.floor(Math.random() * phrases.length)];
             text.style.color = colors[Math.floor(Math.random() * colors.length)];
-            text.style.left = Math.random() * window.innerWidth + 'px';
-            text.style.top = Math.random() * window.innerHeight + 'px';
+            text.style.left = Math.random() * 60 + 20 + 'vw'; // Ближе к центру по горизонтали
+            text.style.top = Math.random() * 50 + 25 + 'vh'; // Центрируем вертикально
             document.body.appendChild(text);
 
             setTimeout(() => {
@@ -147,7 +147,7 @@
             }, 5000);
         }
 
-        setInterval(createFloatingText, 2000); // Появление текстов каждые 2 секунды
+        setInterval(createFloatingText, 2500); // Тексты появляются каждые 2.5 секунды
 
         // Анимация дрожания кнопок
         const buttons = document.querySelectorAll('.button');
