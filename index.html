@@ -35,19 +35,19 @@
             color: white;
             text-decoration: none;
             border-radius: 15px;
-            background-color: #4CAF50;
+            background-color: #4CAF50; /* Ярко-зелёный */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             cursor: pointer;
             transition: transform 0.3s, background-color 0.3s;
         }
         .button:hover {
-            transform: scale(1.1);
-            background-color: #45A049;
+            transform: scale(1.1); /* Увеличение кнопки */
+            background-color: #45A049; /* Тёмно-зелёный */
         }
         /* Плавающие элементы */
         .floating-item {
             position: absolute;
-            width: 100px;
+            width: 100px; /* Размер элементов */
             height: auto;
             animation: float 15s linear infinite;
             z-index: 0;
@@ -65,6 +65,19 @@
                 opacity: 0;
             }
         }
+        /* Плавающие приветственные тексты */
+        .floating-text {
+            position: absolute;
+            font-size: 6vw;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            animation: floatText 5s infinite ease-in-out;
+        }
+        @keyframes floatText {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
     </style>
 </head>
 <body>
@@ -78,9 +91,9 @@
         </a>
     </div>
 
-    <!-- Скрипт для упорядоченного появления изображений -->
+    <!-- Скрипт для анимаций и плавающих элементов -->
     <script>
-        // Массив изображений
+        // Массив изображений для летающих объектов
         const items = [
             'herzogin.png',
             'herzog.png',
@@ -89,30 +102,55 @@
             'parikhr.png'
         ];
 
-        let currentIndex = 0; // Индекс для отслеживания текущего изображения
+        let currentIndex = 0; // Для последовательного показа картинок
+        const floatingItems = []; // Храним текущие элементы на экране
 
+        // Создание летающих изображений
         function createFloatingItem() {
-            // Создаём элемент изображения
-            const item = document.createElement('img');
-            item.src = items[currentIndex]; // Упорядоченно берём изображение из массива
-            item.className = 'floating-item';
+            if (floatingItems.length >= 5) return; // Ограничение до 5 элементов
 
-            // Случайное положение по горизонтали
-            item.style.left = Math.random() * 80 + 10 + 'vw';
-            item.style.animationDuration = 12 + Math.random() * 8 + 's'; // Разная длительность анимации
+            const item = document.createElement('img');
+            item.src = items[currentIndex]; // Показ по очереди
+            item.className = 'floating-item';
+            item.style.left = Math.random() * 80 + 10 + 'vw'; // Позиция по горизонтали
+            item.style.animationDuration = 12 + Math.random() * 8 + 's'; // Разная скорость
 
             document.body.appendChild(item);
+            floatingItems.push(item);
 
-            // Удаляем элемент после завершения анимации
+            // Удаляем элемент по завершении анимации
             item.addEventListener('animationend', () => {
-                item.remove();
+                document.body.removeChild(item);
+                floatingItems.shift(); // Удаляем из массива
             });
 
-            // Переход к следующему изображению
-            currentIndex = (currentIndex + 1) % items.length; // Циклическое обновление индекса
+            // Переход к следующему элементу в массиве
+            currentIndex = (currentIndex + 1) % items.length;
         }
 
-        setInterval(createFloatingItem, 3000); // Появление изображений каждые 3 секунды
+        setInterval(createFloatingItem, 2000); // Новое изображение каждые 2 секунды
+
+        // Тексты приветствия
+        const phrases = [
+            "Hallo Kinder! 🎉",
+            "Welcome, Kids! 🎈"
+        ];
+
+        const colors = ['#FFEB3B', '#FFC107', '#FF5722', '#4CAF50', '#03A9F4', '#E91E63'];
+
+        function createFloatingText() {
+            const text = document.createElement('div');
+            text.className = 'floating-text';
+            text.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+            text.style.color = colors[Math.floor(Math.random() * colors.length)];
+            text.style.left = Math.random() * 60 + 20 + 'vw'; // Центрирование
+            text.style.top = Math.random() * 50 + 25 + 'vh';
+
+            document.body.appendChild(text);
+            setTimeout(() => text.remove(), 5000);
+        }
+
+        setInterval(createFloatingText, 2500); // Тексты каждые 2.5 секунды
     </script>
 </body>
 </html>
