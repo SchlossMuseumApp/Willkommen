@@ -41,10 +41,9 @@
             transition: transform 0.3s, background-color 0.3s;
         }
         .button:hover {
-            transform: scale(1.1); /* Увеличение кнопки */
-            background-color: #45A049; /* Тёмно-зелёный */
+            transform: scale(1.1);
+            background-color: #45A049;
         }
-        /* Анимация "дрожания" кнопок */
         @keyframes shake {
             0%, 100% { transform: translate(0, 0); }
             25% { transform: translate(-5px, 0); }
@@ -90,14 +89,11 @@
 <body>
     <!-- Контейнер с кнопками -->
     <div class="container">
-        <a href="https://schlossmuseumapp.github.io/Zahlen/" class="button">
-            Deutsch
-        </a>
+        <a href="https://schlossmuseumapp.github.io/Zahlen/" class="button">Deutsch</a>
     </div>
 
     <!-- Скрипт для анимаций и плавающих элементов -->
     <script>
-        // Массив изображений для летающих объектов
         const items = [
             'herzogin.png',
             'herzog.png',
@@ -106,21 +102,33 @@
             'parikhr.png'
         ];
 
-        let currentIndex = 0; // Для последовательного показа картинок
-        const floatingItems = []; // Храним текущие элементы на экране
+        let currentIndex = 0;
+        const floatingItems = [];
 
-        // Создание летающих изображений
         function createFloatingItem() {
             if (floatingItems.length >= 5) return; // Ограничение до 5 элементов
 
             const item = document.createElement('img');
             item.src = items[currentIndex];
             item.className = 'floating-item';
-            item.style.left = Math.random() * 80 + 10 + 'vw';
+
+            // Генерация позиций ближе к центру экрана
+            const randomX = Math.random() * 50 + 25; // От 25vw до 75vw
+            const randomY = Math.random() * 50 + 25; // От 25vh до 75vh
+
+            item.style.left = randomX + 'vw';
+            item.style.top = randomY + 'vh';
             item.style.animationDuration = 12 + Math.random() * 8 + 's';
+
+            // Случайное увеличение элемента
+            if (Math.random() > 0.5) {
+                item.style.transform = 'scale(2)'; // Увеличение в 2 раза
+            }
+
             document.body.appendChild(item);
             floatingItems.push(item);
 
+            // Удаление элемента после завершения анимации
             item.addEventListener('animationend', () => {
                 document.body.removeChild(item);
                 floatingItems.shift();
@@ -132,11 +140,7 @@
         setInterval(createFloatingItem, 2000);
 
         // Тексты приветствия
-        const phrases = [
-            "Hallo Kinder! 🎉",
-            "Welcome, Kids! 🎈"
-        ];
-
+        const phrases = ["Hallo Kinder! 🎉", "Welcome, Kids! 🎈"];
         const colors = ['#FFEB3B', '#FFC107', '#FF5722', '#4CAF50', '#03A9F4', '#E91E63'];
 
         function createFloatingText() {
