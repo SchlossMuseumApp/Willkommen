@@ -52,15 +52,15 @@
         }
         @keyframes float {
             0% {
-                transform: translateY(100vh) translateX(-10%) rotate(0deg); /* Начало с лёгким смещением */
+                transform: translateY(100vh) translateX(-10%) rotate(0deg);
                 opacity: 1;
             }
             50% {
-                transform: translateY(50vh) translateX(-10%) rotate(15deg); /* Лёгкий поворот в середине */
+                transform: translateY(50vh) translateX(-10%) rotate(15deg);
                 opacity: 1;
             }
             100% {
-                transform: translateY(-5vh) translateX(-10%) rotate(-15deg); /* Конец с обратным поворотом */
+                transform: translateY(-5vh) translateX(-10%) rotate(-15deg);
                 opacity: 0;
             }
         }
@@ -72,9 +72,6 @@
             font-weight: bold;
             color: white;
             text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
-            left: 50%;
-            transform: translateX(-50%);
-            top: 20%;
             opacity: 0;
             animation: textFade 5s forwards;
         }
@@ -82,6 +79,23 @@
             0% { opacity: 0; }
             10%, 90% { opacity: 1; }
             100% { opacity: 0; }
+        }
+
+        /* Расположение текстов */
+        .top-text {
+            top: 5%; /* Верхняя часть */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .middle-text {
+            top: 40%; /* Над кнопкой */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .bottom-text {
+            bottom: 5%; /* Нижняя часть */
+            left: 50%;
+            transform: translateX(-50%);
         }
     </style>
 </head>
@@ -115,13 +129,18 @@
         setInterval(createFloatingItem, 3000); // Интервал между картинками
 
         // Приветственные тексты
-        const phrases = ["Hallo Kinder! 🎉", "Welcome, Kids! 🎈"];
+        const phrases = [
+            { text: "Hallo Kinder! 🎉", position: "top-text" },
+            { text: "Welcome, Kids! 🎈", position: "middle-text" },
+            { text: "Genießt die Tour! ✨", position: "bottom-text" }
+        ];
         let currentTextIndex = 0;
 
         function showFloatingText() {
+            const phrase = phrases[currentTextIndex];
             const text = document.createElement('div');
-            text.className = 'floating-text';
-            text.textContent = phrases[currentTextIndex];
+            text.className = `floating-text ${phrase.position}`;
+            text.textContent = phrase.text;
 
             document.body.appendChild(text);
 
