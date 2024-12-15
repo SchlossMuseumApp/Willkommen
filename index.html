@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Museum Kinder-Audioguide</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Comic Sans MS', Arial, sans-serif;
+            background: linear-gradient(to bottom, #FFEB3B, #FF5722); /* Радужный градиент */
+        }
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('kids_background.png') no-repeat center center;
+            background-size: cover;
+            z-index: 0;
+        }
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1;
+        }
+        .button {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 30px;
+            width: 200px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            background-color: #4CAF50; /* Ярко-зелёный цвет */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: transform 0.3s, background-color 0.3s;
+        }
+        .button:hover {
+            transform: scale(1.1); /* Увеличение кнопки */
+            background-color: #45A049; /* Более тёмный зелёный */
+        }
+        .emoji {
+            font-size: 30px;
+            margin-right: 10px;
+        }
+        .floating-text {
+            position: absolute;
+            font-size: 8vw;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            animation: float 5s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Фон -->
+    <div class="background"></div>
+    <!-- Контейнер с кнопками -->
+    <div class="container">
+        <a href="https://schlossmuseumwf.github.io/KinderDeutsch/" class="button">
+            <span class="emoji">🇩🇪</span> Deutsch
+        </a>
+        <a href="https://schlossmuseumwf.github.io/KinderEnglish/" class="button">
+            <span class="emoji">🇬🇧</span> English
+        </a>
+    </div>
+
+    <!-- Плавающий текст -->
+    <script>
+        const phrases = [
+            "Hallo Kinder! 🎉", // German
+            "Welcome, Kids! 🎈" // English
+        ];
+
+        const colors = ['#FFEB3B', '#FFC107', '#FF5722', '#4CAF50', '#03A9F4', '#E91E63'];
+        const screenHeight = window.innerHeight;
+
+        function createFloatingText() {
+            const text = document.createElement('div');
+            text.className = 'floating-text';
+            text.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+            text.style.color = colors[Math.floor(Math.random() * colors.length)];
+            text.style.left = Math.random() * window.innerWidth + 'px';
+            text.style.top = Math.random() * screenHeight + 'px';
+            document.body.appendChild(text);
+
+            setTimeout(() => {
+                document.body.removeChild(text);
+            }, 5000);
+        }
+
+        setInterval(createFloatingText, 1000); // Добавляем новый текст каждые 1 секунду
+    </script>
+</body>
+</html>
