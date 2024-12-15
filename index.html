@@ -16,16 +16,6 @@
             width: 100%;
             height: 100%;
         }
-        .background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('kids_background.png') no-repeat center center;
-            background-size: cover;
-            z-index: 0;
-        }
         .container {
             position: absolute;
             top: 50%;
@@ -57,18 +47,30 @@
             font-size: 30px;
             margin-right: 10px;
         }
-        /* Анимация "дрожания" */
-        @keyframes shake {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(-5px, 0); }
-            50% { transform: translate(5px, 0); }
-            75% { transform: translate(-5px, 0); }
+        /* Летающие элементы */
+        .floating-item {
+            position: absolute;
+            width: 80px; /* Уменьшенный размер */
+            height: auto;
+            animation: float 10s linear infinite;
+            z-index: 0;
+        }
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) rotate(360deg);
+                opacity: 0;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Фон -->
-    <div class="background"></div>
     <!-- Контейнер с кнопками -->
     <div class="container">
         <a href="https://schlossmuseumapp.github.io/KinderDeutsch/" class="button">
@@ -79,26 +81,36 @@
         </a>
     </div>
 
-    <!-- Анимация кнопок -->
+    <!-- Скрипт для добавления летающих объектов -->
     <script>
-        // Выбираем все кнопки
-        const buttons = document.querySelectorAll('.button');
+        const items = [
+            'herzogin.png', // Герцогиня
+            'herzog.png',   // Герцог
+            'throne.png',   // Трон
+            'parikdm.png',  // Женский парик
+            'parikhr.png'   // Мужской парик
+        ];
 
-        // Функция для случайного "дрожания" кнопки
-        function shakeButton(button) {
-            button.style.animation = 'shake 0.5s ease';
-            // Удаляем анимацию после её завершения
-            button.addEventListener('animationend', () => {
-                button.style.animation = '';
+        function createFloatingItem() {
+            const item = document.createElement('img');
+            item.src = items[Math.floor(Math.random() * items.length)];
+            item.className = 'floating-item';
+
+            // Устанавливаем случайное начальное положение
+            item.style.left = Math.random() * 100 + 'vw';
+            item.style.top = '100vh';
+            item.style.animationDuration = 8 + Math.random() * 5 + 's'; // Разное время анимации
+
+            document.body.appendChild(item);
+
+            // Удаляем элемент после завершения анимации
+            item.addEventListener('animationend', () => {
+                document.body.removeChild(item);
             });
         }
 
-        // Устанавливаем интервалы для каждой кнопки
-        buttons.forEach((button, index) => {
-            setInterval(() => {
-                shakeButton(button);
-            }, 2000 + index * 500); // Разные интервалы для каждой кнопки
-        });
+        // Добавляем новые элементы каждые 2 секунды
+        setInterval(createFloatingItem, 2000);
     </script>
 </body>
 </html>
