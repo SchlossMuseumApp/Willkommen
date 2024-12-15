@@ -16,6 +16,7 @@
             width: 100%;
             height: 100%;
         }
+        /* Контейнер кнопок */
         .container {
             position: absolute;
             top: 50%;
@@ -43,6 +44,13 @@
             transform: scale(1.1); /* Увеличение кнопки */
             background-color: #45A049; /* Более тёмный зелёный */
         }
+        /* Анимация "дрожания" кнопок */
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-5px, 0); }
+            50% { transform: translate(5px, 0); }
+            75% { transform: translate(-5px, 0); }
+        }
         .emoji {
             font-size: 30px;
             margin-right: 10px;
@@ -68,6 +76,19 @@
                 opacity: 0;
             }
         }
+        /* Анимация текста приветствия */
+        .floating-text {
+            position: absolute;
+            font-size: 8vw;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            animation: floatText 5s infinite ease-in-out;
+        }
+        @keyframes floatText {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
     </style>
 </head>
 <body>
@@ -81,8 +102,34 @@
         </a>
     </div>
 
-    <!-- Скрипт для добавления летающих объектов -->
+    <!-- Скрипт для анимации -->
     <script>
+        // Приветственные тексты с эмодзи
+        const phrases = [
+            "Hallo Kinder! 🎉", // German
+            "Welcome, Kids! 🎈" // English
+        ];
+
+        const colors = ['#FFEB3B', '#FFC107', '#FF5722', '#4CAF50', '#03A9F4', '#E91E63'];
+
+        // Добавление приветственного текста
+        function createFloatingText() {
+            const text = document.createElement('div');
+            text.className = 'floating-text';
+            text.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+            text.style.color = colors[Math.floor(Math.random() * colors.length)];
+            text.style.left = Math.random() * window.innerWidth + 'px';
+            text.style.top = Math.random() * window.innerHeight + 'px';
+            document.body.appendChild(text);
+
+            setTimeout(() => {
+                document.body.removeChild(text);
+            }, 5000);
+        }
+
+        setInterval(createFloatingText, 2000); // Текст появляется каждые 2 секунды
+
+        // Летающие объекты
         const items = [
             'herzogin.png', // Герцогиня
             'herzog.png',   // Герцог
@@ -109,8 +156,18 @@
             });
         }
 
-        // Добавляем новые элементы каждые 2 секунды
-        setInterval(createFloatingItem, 2000);
+        setInterval(createFloatingItem, 2000); // Объекты появляются каждые 2 секунды
+
+        // Анимация кнопок
+        const buttons = document.querySelectorAll('.button');
+        buttons.forEach((button, index) => {
+            setInterval(() => {
+                button.style.animation = 'shake 0.5s ease';
+                button.addEventListener('animationend', () => {
+                    button.style.animation = '';
+                });
+            }, 2000 + index * 500); // Разные интервалы для каждой кнопки
+        });
     </script>
 </body>
 </html>
