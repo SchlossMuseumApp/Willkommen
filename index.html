@@ -16,6 +16,7 @@
             width: 100%;
             height: 100%;
         }
+        /* Контейнер кнопок */
         .container {
             position: absolute;
             top: 50%;
@@ -38,10 +39,25 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             cursor: pointer;
             transition: transform 0.3s, background-color 0.3s;
+            animation: shake 2s infinite ease-in-out;
         }
         .button:hover {
             transform: scale(1.1);
             background-color: #45A049;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-5px, 0); }
+            50% { transform: translate(5px, 0); }
+            75% { transform: translate(-5px, 0); }
+        }
+        /* Анимация для картинок */
+        .floating-item {
+            position: absolute;
+            width: 100px;
+            height: auto;
+            animation: float 25s linear forwards;
+            opacity: 0.9;
         }
         @keyframes float {
             0% {
@@ -59,20 +75,28 @@
                 opacity: 0;
             }
         }
-        .floating-item {
+        /* Плавающие приветственные тексты */
+        .floating-text {
             position: absolute;
-            width: 100px;
-            height: auto;
-            animation: float 20s linear forwards;
+            font-size: 6vw;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            animation: floatText 5s infinite ease-in-out;
+        }
+        @keyframes floatText {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
         }
     </style>
 </head>
 <body>
-    <!-- Контейнер с кнопками -->
+    <!-- Контейнер с кнопкой -->
     <div class="container">
         <a href="https://schlossmuseumapp.github.io/Zahlen/" class="button">Deutsch</a>
     </div>
 
+    <!-- Скрипт -->
     <script>
         const items = ['herzogin.png', 'herzog.png', 'throne.png', 'parikdm.png', 'parikhr.png'];
         const floatingItems = []; // Храним текущие элементы на экране
@@ -80,24 +104,22 @@
         function createFloatingItem() {
             if (floatingItems.length >= 5) return; // Максимум 5 элементов
 
-            // Получаем случайный элемент из доступных, исключая уже показанные
             const availableItems = items.filter(item => !floatingItems.includes(item));
             if (availableItems.length === 0) return;
 
             const randomItem = availableItems[Math.floor(Math.random() * availableItems.length)];
-
-            // Создаём изображение
             const img = document.createElement('img');
             img.src = randomItem;
             img.className = 'floating-item';
-            img.style.left = Math.random() * 50 + 25 + 'vw'; // Центрирование по горизонтали
-            img.style.top = Math.random() * 10 + 70 + 'vh'; // Начало снизу
-            img.style.width = Math.random() > 0.5 ? '200px' : '100px'; // Рандомное увеличение
+
+            // Центрирование по горизонтали
+            img.style.left = Math.random() * 40 + 30 + 'vw';
+            img.style.animationDuration = '25s';
+            img.style.width = Math.random() > 0.5 ? '200px' : '100px';
 
             document.body.appendChild(img);
             floatingItems.push(randomItem);
 
-            // Удаляем элемент по завершении анимации
             img.addEventListener('animationend', () => {
                 document.body.removeChild(img);
                 floatingItems.splice(floatingItems.indexOf(randomItem), 1);
@@ -105,6 +127,24 @@
         }
 
         setInterval(createFloatingItem, 3000);
+
+        // Приветственные тексты
+        const phrases = ["Hallo Kinder! 🎉", "Welcome, Kids! 🎈"];
+        const colors = ['#FFEB3B', '#FFC107', '#FF5722', '#4CAF50', '#03A9F4', '#E91E63'];
+
+        function createFloatingText() {
+            const text = document.createElement('div');
+            text.className = 'floating-text';
+            text.textContent = phrases[Math.floor(Math.random() * phrases.length)];
+            text.style.color = colors[Math.floor(Math.random() * colors.length)];
+            text.style.left = Math.random() * 50 + 25 + 'vw';
+            text.style.top = Math.random() * 30 + 10 + 'vh';
+
+            document.body.appendChild(text);
+            setTimeout(() => text.remove(), 5000);
+        }
+
+        setInterval(createFloatingText, 2500);
     </script>
 </body>
 </html>
