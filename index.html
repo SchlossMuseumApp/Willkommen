@@ -10,13 +10,33 @@
             padding: 0;
             overflow: hidden;
             font-family: 'Comic Sans MS', Arial, sans-serif;
-            background: linear-gradient(to bottom, #FFEB3B, #FF5722); /* Яркий градиент */
+            background: linear-gradient(to bottom, #FFEB3B, #FF5722);
         }
-        html, body {
-            width: 100%;
-            height: 100%;
+        .floating-item {
+            position: absolute;
+            width: 100px;
+            height: auto;
+            animation: float 20s linear forwards;
+            z-index: 0;
+            transition: transform 1s ease-in-out;
         }
-        /* Контейнер кнопок */
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+            90% { opacity: 1; } /* Дольше остаётся видимым */
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+        .floating-text {
+            position: absolute;
+            font-size: 6vw;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            animation: floatText 5s infinite ease-in-out;
+        }
+        @keyframes floatText {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
         .container {
             position: absolute;
             top: 50%;
@@ -33,108 +53,65 @@
             font-size: 20px;
             font-weight: bold;
             color: white;
-            text-decoration: none;
+            background-color: #4CAF50;
             border-radius: 15px;
-            background-color: #4CAF50; /* Ярко-зелёный */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
             cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s, background-color 0.3s;
         }
         .button:hover {
             transform: scale(1.1);
             background-color: #45A049;
         }
-        @keyframes shake {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(-5px, 0); }
-            50% { transform: translate(5px, 0); }
-            75% { transform: translate(-5px, 0); }
-        }
-        /* Плавающие элементы */
-        .floating-item {
-            position: absolute;
-            width: 100px;
-            height: auto;
-            animation: float 15s linear infinite;
-            z-index: 0;
-        }
-        @keyframes float {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            50% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-10vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-        /* Плавающие приветственные тексты */
-        .floating-text {
-            position: absolute;
-            font-size: 6vw;
-            font-weight: bold;
-            color: white;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
-            animation: floatText 5s infinite ease-in-out;
-        }
-        @keyframes floatText {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
     </style>
 </head>
 <body>
-    <!-- Контейнер с кнопками -->
+    <!-- Контейнер с кнопкой -->
     <div class="container">
         <a href="https://schlossmuseumapp.github.io/Zahlen/" class="button">Deutsch</a>
     </div>
 
-    <!-- Скрипт для анимаций и плавающих элементов -->
     <script>
-        const items = [
-            'herzogin.png',
-            'herzog.png',
-            'throne.png',
-            'parikdm.png',
-            'parikhr.png'
-        ];
-
-        let currentIndex = 0;
+        const items = ['herzogin.png', 'herzog.png', 'throne.png', 'parikdm.png', 'parikhr.png'];
         const floatingItems = [];
+        let positions = []; // Храним занятые позиции
 
+        // Создаём летающий элемент
         function createFloatingItem() {
-            if (floatingItems.length >= 5) return; // Ограничение до 5 элементов
+            if (floatingItems.length >= 5) return;
 
             const item = document.createElement('img');
-            item.src = items[currentIndex];
+            item.src = items[Math.floor(Math.random() * items.length)];
             item.className = 'floating-item';
 
-            // Генерация позиций ближе к центру экрана
-            const randomX = Math.random() * 50 + 25; // От 25vw до 75vw
-            const randomY = Math.random() * 50 + 25; // От 25vh до 75vh
+            // Генерация позиции, избегая пересечений
+            let x, y, overlap;
+            do {
+                x = Math.random() * 50 + 25; // Центр экрана
+                y = Math.random() * 50 + 25;
+                overlap = positions.some(pos => Math.abs(pos.x - x) < 10 && Math.abs(pos.y - y) < 10);
+            } while (overlap);
 
-            item.style.left = randomX + 'vw';
-            item.style.top = randomY + 'vh';
-            item.style.animationDuration = 12 + Math.random() * 8 + 's';
+            positions.push({ x, y });
+            item.style.left = `${x}vw`;
+            item.style.top = `${y}vh`;
 
-            // Случайное увеличение элемента
+            // Случайное увеличение
             if (Math.random() > 0.5) {
-                item.style.transform = 'scale(2)'; // Увеличение в 2 раза
+                setTimeout(() => {
+                    item.style.transform = 'scale(2)';
+                }, Math.random() * 3000 + 1000); // Плавное увеличение в процессе
             }
 
             document.body.appendChild(item);
             floatingItems.push(item);
 
-            // Удаление элемента после завершения анимации
             item.addEventListener('animationend', () => {
                 document.body.removeChild(item);
                 floatingItems.shift();
+                positions.shift();
             });
-
-            currentIndex = (currentIndex + 1) % items.length;
         }
 
         setInterval(createFloatingItem, 2000);
@@ -156,17 +133,6 @@
         }
 
         setInterval(createFloatingText, 2500);
-
-        // Анимация дрожания кнопок
-        const buttons = document.querySelectorAll('.button');
-        buttons.forEach((button, index) => {
-            setInterval(() => {
-                button.style.animation = 'shake 0.5s ease';
-                button.addEventListener('animationend', () => {
-                    button.style.animation = '';
-                });
-            }, 2000 + index * 500);
-        });
     </script>
 </body>
 </html>
