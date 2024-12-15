@@ -52,14 +52,15 @@
         }
         @keyframes float {
             0% {
-                transform: translateY(100vh);
+                transform: translateY(100vh) translateX(-10%) rotate(0deg); /* Начало с лёгким смещением */
                 opacity: 1;
             }
-            90% {
+            50% {
+                transform: translateY(50vh) translateX(-10%) rotate(15deg); /* Лёгкий поворот в середине */
                 opacity: 1;
             }
             100% {
-                transform: translateY(-5vh);
+                transform: translateY(-5vh) translateX(-10%) rotate(-15deg); /* Конец с обратным поворотом */
                 opacity: 0;
             }
         }
@@ -94,12 +95,12 @@
         const items = ['herzogin.png', 'herzog.png', 'throne.png', 'parikdm.png', 'parikhr.png'];
         let currentItemIndex = 0;
 
-        // Создание плавающих изображений по центру
+        // Создание плавающих изображений по центру с лёгкой ротацией
         function createFloatingItem() {
             const img = document.createElement('img');
             img.src = items[currentItemIndex];
             img.className = 'floating-item';
-            img.style.left = '50%';
+            img.style.left = '45%'; // Чуть левее (45% вместо 50%)
             img.style.transform = 'translateX(-50%)';
 
             document.body.appendChild(img);
